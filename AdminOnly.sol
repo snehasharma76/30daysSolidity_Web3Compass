@@ -46,6 +46,7 @@ contract AdminOnly {
         require(allowance > 0, "You don't have any treasure allowance");
         require(!hasWithdrawn[msg.sender], "You have already withdrawn your treasure");
         require(allowance <= treasureAmount, "Not enough treasure in the chest");
+        require(allowance >= amount, "Cannot withdraw more than you are allowed"); // condition to check if user is withdrawing more than allowed
         
         // Mark as withdrawn and reduce treasure
         hasWithdrawn[msg.sender] = true;
