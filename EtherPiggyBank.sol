@@ -14,11 +14,16 @@ contract EtherPiggyBank{
 
     constructor(){
         bankManager = msg.sender;
-
+        members.push(msg.sender);
     }
 
     modifier onlyBankManager(){
         require(msg.sender == bankManager, "Only bank manager can perform this action");
+        _;
+    }
+
+    modifier onlyRegisteredMember() {
+        require(registeredMembers[msg.sender], "Member not registered");
         _;
     }
   
@@ -34,22 +39,20 @@ contract EtherPiggyBank{
         return members;
     }
     //deposit amount 
-    function depositAmount(uint256 _amount) public {
-        require(registeredMembers[msg.sender], "Member not registered");
-        require(_amount > 0, "Invalid amount");
-        balance[msg.sender] = balance[msg.sender]+_amount;
+    // function depositAmount(uint256 _amount) public onlyRegisteredMember{
+    //     require(_amount > 0, "Invalid amount");
+    //     balance[msg.sender] = balance[msg.sender]+_amount;
    
-    }
+    // }
+    
     //deposit in Ether
-    function depositAmountEther() public payable{
-        require(registeredMembers[msg.sender], "Member not registered");
+    function depositAmountEther() public payable onlyRegisteredMember{  
         require(msg.value > 0, "Invalid amount");
         balance[msg.sender] = balance[msg.sender]+msg.value;
    
     }
     
-    function withdrawAmount(uint256 _amount) public payable{
-        require(registeredMembers[msg.sender], "Member not registered");
+    function withdrawAmount(uint256 _amount) public onlyRegisteredMember{
         require(_amount > 0, "Invalid amount");
         require(balance[msg.sender] >= _amount, "Insufficient balance");
         balance[msg.sender] = balance[msg.sender]-_amount;
