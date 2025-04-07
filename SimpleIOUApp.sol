@@ -73,9 +73,9 @@ contract SimpleIOU{
         require(_to != address(0), "Invalid address");
         require(registeredFriends[_to], "Recipient not registered");
         require(balances[msg.sender] >= _amount, "Insufficient balance");
-        
         balances[msg.sender] -= _amount;
         _to.transfer(_amount);
+        balances[_to]+=_amount;
     }
     
     // Alternative transfer method using call()
@@ -87,6 +87,7 @@ contract SimpleIOU{
         balances[msg.sender] -= _amount;
         
         (bool success, ) = _to.call{value: _amount}("");
+        balances[_to]+=_amount;
         require(success, "Transfer failed");
     }
     
